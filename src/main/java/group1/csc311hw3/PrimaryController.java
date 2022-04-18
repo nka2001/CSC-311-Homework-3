@@ -16,7 +16,7 @@ public class PrimaryController {
     private TextArea textArea;
     
     
-    private Stack<String> s;
+    private Stack<String> s = new Stack<String>();
 
     private void switchToSecondary() throws IOException {
         App.setRoot("secondary");
@@ -46,14 +46,29 @@ public class PrimaryController {
     @FXML
     private void undoType(ActionEvent event) {
         
+        try{
+        
+        String getString = textArea.getText();//gets the string that is currently in the textarea
+        
+        String removeMe = getString.substring(getString.length() -1, getString.length());//removes the last character
+        
+        s.push(removeMe);//pushes the character into the stack for possible redo
         
         
+        String newString = getString.substring(0, getString.length() - 1);//creates a new string by chopping off the end that was removed
+        
+        textArea.setText(newString);//puts the string back into the text area
+        } catch (Exception e){//this fires if there is nothing left to undo, IE if the textArea is empty 
+            makeUndoAlert();
+        }
+     
         
     }
 
     @FXML
     private void redoType(ActionEvent event) {
         
+        try{
         String str = s.pop();
         
         String curr = textArea.getText();
@@ -62,13 +77,28 @@ public class PrimaryController {
         
         textArea.setText(curr);
         
-        
+        }catch (Exception e){
+            makeRedoAlert();
+        }
     }
 
     @FXML
     private void testMe(KeyEvent event) {
         
         System.out.println(textArea.getText());
+        
+    }
+    /**
+     * this method will create an alert saying there is nothing to undo, if the text area is empty
+     */
+    public void makeUndoAlert(){
+        
+    }
+    
+    /**
+     * this method will create an alert saying there is nothing to redo, meaning the stack is empty 
+     */
+    public void makeRedoAlert(){
         
     }
 }
